@@ -2,9 +2,12 @@ from pathlib import Path
 from datetime import timedelta
 import os
 import dj_database_url
-from dotenv import load_dotenv
 
+from dotenv import load_dotenv
 load_dotenv()
+
+
+# ================= BASE DIR =================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -19,11 +22,14 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
 
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    "CSRF_TRUSTED_ORIGINS", ""
+).split(",")
+
 SECURE_SSL_REDIRECT = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # ================= INSTALLED APPS =================
 
@@ -80,12 +86,23 @@ TEMPLATES = [
 
 # ================= DATABASE =================
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
-        conn_max_age=600,
-    )
-}
+if DEBUG:
+    # Local development
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+else:
+    # Production (Render)
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=os.environ.get("DATABASE_URL"),
+            conn_max_age=600,
+        )
+    }
+
 
 # ================= INTERNATIONAL =================
 
@@ -97,7 +114,11 @@ USE_TZ = True
 # ================= STATIC FILES =================
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# ================= DEFAULT FIELD =================
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -122,12 +143,7 @@ SIMPLE_JWT = {
 
 CORS_ALLOW_CREDENTIALS = True
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
-
-
 CORS_ALLOWED_ORIGINS = os.environ.get(
     "CORS_ALLOWED_ORIGINS", ""
 ).split(",")
-
-
 
