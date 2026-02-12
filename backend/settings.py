@@ -139,11 +139,32 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+# ================= DEBUG =================
+
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+
+
+# ================= ALLOWED HOSTS =================
+
+ALLOWED_HOSTS = os.environ.get(
+    "ALLOWED_HOSTS",
+    "127.0.0.1,localhost"
+).split(",")
+
+
 # ================= CORS =================
 
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = os.environ.get(
-    "CORS_ALLOWED_ORIGINS", ""
+    "CORS_ALLOWED_ORIGINS",
+    "http://localhost:5173"
 ).split(",")
 
+
+# ================= CSRF =================
+
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    "CSRF_TRUSTED_ORIGINS",
+    "http://localhost:5173"
+).split(",")
