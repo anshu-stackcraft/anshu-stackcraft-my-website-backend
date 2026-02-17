@@ -140,7 +140,6 @@ SIMPLE_JWT = {
 # ================= CORS =================
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")
-    if origin.strip()
+    "http://localhost:5173",
+    "https://anshu-stackcraft-my-website-fronten.vercel.app",
 ]
